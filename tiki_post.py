@@ -42,20 +42,20 @@ class Tiki():
                 brand   = n.get_attribute('data-brand')
                 cate    = n.get_attribute('data-category')
                 img     = n.find_elements_by_xpath('.//a//div//span[@class="image"]//img')[0].get_attribute('src')
-
+                localship = n.find_elements_by_xpath('.//a//div//span[@class="image"]//img')[0].get_attribute('src')
                 link    = n.find_elements_by_xpath('.//a[@class=""]')[0].get_attribute('href')
-                self.list.append({'title' : title, 'link' : link , 'brand' : brand, 'category_detail' : cate, 'thumnail' : img , 'category_id' : cate_id})
-                print(self.list)
-                break
+                self.list.append({'title' : title, 'source' : link , 'brand_id' : brand, 'category_detail' : cate, 'thumnail' : img , 'category_id' : cate_id , 'localship' : localship})
+                # print(self.list)
+                # break
         except Exception as e:
             print(e)
         self.close()
     
-    def post_menu(self, data):
-        if len(data) > 0:
+    def post_post(self):
+        if len(self.list) > 0:
             print('post data api...')
             headers = {'X-API-TOKEN': 'your_token_here'}
-            all_dt = json.dumps(data)
+            all_dt = json.dumps(self.list)
             payload = {'dataInsert': all_dt}
             r = requests.post("http://banchongia.local.com/api/admin/v1/insert_data", data=payload, headers=headers)
             txt = r.text
@@ -72,10 +72,14 @@ class Tiki():
             r        = requests.get('http://banchongia.local.com/api/admin/v1/get_menu?page=' + str(i))
             for url in r.json()['data'] :
                 cate_id = url['id']
-
-                for j in range(1, int(url['total']/52) + 1) :
+                total_page = int(url['total']/52)
+                if total_page >= 25 :
+                    total_page = 25
+                    
+                for j in range(1, total_page + 1) :
                     self.open(url['source'] + '?page=' + str(j))
                     self.fetch_link(cate_id)
+                    self.post_post()
  
 
 

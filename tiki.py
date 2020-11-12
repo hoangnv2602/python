@@ -68,6 +68,7 @@ class Tiki():
                     
                     # print(total)
                     self.sub_1.append({'title' : title, 'link' : link , 'parent' : self.main_menu[i]['title'] , 'type' : 'main_1', 'total' : total})
+                
                 self.close()
                 self.menu_2()
 
@@ -185,6 +186,45 @@ class Tiki():
 
     def menu_5(self) :
         
+        if len(self.sub_4) > 0 :
+            for i in range(0, len(self.sub_4) ) :
+                
+                self.open(self.sub_4[i]['link'])
+
+                code_html_menu_1        = '//div[@class="list-group"]//div[@class="list-group-item is-child"]//a[@class="list-group-item"]'
+
+                try:
+                    n = self.driver.find_elements_by_xpath(code_html_menu_1)
+                    if len(n) > 0 :
+                        data = []
+                        data.append(self.sub_5[i])
+                        self.post_menu(data)
+                        for n in self.driver.find_elements_by_xpath(code_html_menu_1):
+                            titles   = (n.get_attribute('innerHTML')).strip()
+                            title   = (titles.split('<span>')[0]).strip()
+                            total   = (titles.split('<span>')[1]).strip()
+                            total   = total.replace("(", "")
+                            total   = total.replace(")", "")
+                            total   = (total.replace("</span>", "")).strip()
+                            link    = n.get_attribute('href')
+                            self.sub_5.append({'title' : title, 'link' : link , 'parent' : self.sub_4[i]['title'] , 'type' : 'category', 'total' : total})
+                        self.close()
+                        self.menu_6()
+                    else :
+                        self.close()
+                        data = []
+                        self.sub_4[i]['level'] = 'end'
+                        data.append(self.sub_4[i])
+                        self.post_menu(data)
+                        # print(1)
+                except Exception as e:
+                    print(e)
+            self.sub_4 = []
+    
+    
+
+    def menu_6(self) :
+        
         if len(self.sub_5) > 0 :
             for i in range(0, len(self.sub_5) ) :
                 
@@ -208,45 +248,6 @@ class Tiki():
                             link    = n.get_attribute('href')
                             self.sub_6.append({'title' : title, 'link' : link , 'parent' : self.sub_5[i]['title'] , 'type' : 'category', 'total' : total})
                         self.close()
-                        self.menu_6()
-                    else :
-                        self.close()
-                        data = []
-                        self.sub_4[i]['level'] = 'end'
-                        data.append(self.sub_4[i])
-                        self.post_menu(data)
-                        # print(1)
-                except Exception as e:
-                    print(e)
-            self.sub_4 = []
-    
-    
-
-    def menu_6(self) :
-        
-        if len(self.sub_4) > 0 :
-            for i in range(0, len(self.sub_4) ) :
-                
-                self.open(self.sub_4[i]['link'])
-
-                code_html_menu_1        = '//div[@class="list-group"]//div[@class="list-group-item is-child"]//a[@class="list-group-item"]'
-
-                try:
-                    n = self.driver.find_elements_by_xpath(code_html_menu_1)
-                    if len(n) > 0 :
-                        data = []
-                        data.append(self.sub_4[i])
-                        self.post_menu(data)
-                        for n in self.driver.find_elements_by_xpath(code_html_menu_1):
-                            titles   = (n.get_attribute('innerHTML')).strip()
-                            title   = (titles.split('<span>')[0]).strip()
-                            total   = (titles.split('<span>')[1]).strip()
-                            total   = total.replace("(", "")
-                            total   = total.replace(")", "")
-                            total   = (total.replace("</span>", "")).strip()
-                            link    = n.get_attribute('href')
-                            self.sub_5.append({'title' : title, 'link' : link , 'parent' : self.sub_4[i]['title'] , 'type' : 'category', 'total' : total})
-                        self.close()
                         self.menu_4()
                     else :
                         self.close()
@@ -266,7 +267,7 @@ class Tiki():
             headers = {'X-API-TOKEN': 'your_token_here'}
             all_dt = json.dumps(data)
             payload = {'dataInsert': all_dt}
-            r = requests.post("http://boonthelab.local.com/banchongia/api/admin/v1/make-category", data=payload, headers=headers)
+            r = requests.post("http://banchongia.local.com/api/admin/v1/make-category", data=payload, headers=headers)
             txt = r.text
             print(txt)
             sleep(2)

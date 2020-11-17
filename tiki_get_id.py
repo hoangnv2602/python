@@ -13,20 +13,6 @@ class Tiki():
         warnings.filterwarnings('ignore')
         self.data = []
 
-    def start_driver(self):
-        self.driver = webdriver.Chrome("D:/Python/chromedriver.exe")
-        self.driver.implicitly_wait(5)
-        self.driver.set_page_load_timeout(5)
-
-    def open(self, url):
-        print('getting page...', url)
-        try: 
-            self.start_driver()
-            self.driver.get(url)
-        except TimeoutException as e:
-            print(e)
-        print('page opened...')
-
     def post_data(self):
         if len(self.data) > 0:
             print('post data api...')
@@ -38,66 +24,31 @@ class Tiki():
             print(txt)
             # sleep(2)
             self.data = []
-
-    def close(self):
-        # print('closing driver...')
-        self.driver.quit()
-        print('closed!')
     
     def fetch_data(self, url) :
         p = 1
         while 1 == 1 :
-            self.open(url + '?page=' + str(p))
-            
-            # self.driver.refresh()
-            sleep(2)
 
-            code_html_menu_1        = '//div[@class="product-box-list"]//div[@class="product-item       "]'
-            code_html_menu_2        = '//a[@class="product-item"]'
-            # code_html_menu_2        = '//body'
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+
+            data_ = requests.get(url + '?page=' + str(p), headers=headers)
 
             try:
-                n_1 = self.driver.find_elements_by_xpath(code_html_menu_1)
-                n_2 = self.driver.find_elements_by_xpath(code_html_menu_2)
+                data = htmldom.HtmlDom().createDom(data_.text)
 
-                if ( len( n_1 ) > 0 ) : 
-                    print('type 1')
-                    for n in self.driver.find_elements_by_xpath(code_html_menu_1) :
-                        ids = n.get_attribute('data-id')
-                        # print(ids)
-                        # ids = re.findall(r"\-p\d+\.html",ids)[0]
-                        # ids = ids.replace('-p','')
-                        # ids = ids.replace('.html','')
-
-                        self.data.append({'id' : ids})
-                    
-                    self.close()
-                    self.post_data()
-
-                if ( len( n_2 ) > 0 ) :
-                    print('type 2')
-                    for n in self.driver.find_elements_by_xpath(code_html_menu_2) :
-                        ids = n.get_attribute('href')
-                        # print(ids)
-                        # print(ids)
+                for n in data.find('.product-item') :
+                    if n.attr('data-id') != 'Undefined Attribute':
+                        ids = n.attr('data-id')
+                    elif n.attr('href') != 'Undefined Attribute' :
+                        ids = n.attr('href')
                         ids = re.findall(r"\-p\d+\.html",ids)[0]
                         ids = ids.replace('-p','')
                         ids = ids.replace('.html','')
-
-                        self.data.append({'id' : ids})
-                    # print(self.data)
-                    self.close()
-                    self.post_data()
-                if ( len( n_1 ) == 0 and len( n_2 ) == 0 ) :
-                    self.data = []
-                    self.close()
-                    break
+                    
+                    self.data.append({'id' : ids})
+                self.post_data()
             except Exception as e:
                 print(e)
-
-            self.close()
-            self.data = []
-            p = p + 1
 
     def run(self):
 

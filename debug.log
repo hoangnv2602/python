@@ -1,0 +1,7 @@
+[1116/165612.528:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1116/165612.537:ERROR:exception_snapshot_win.cc(99)] thread ID 28280 not found in process
+[1116/231613.875:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
+[1117/023353.899:ERROR:file_io.cc(135)] WriteFile: The pipe is being closed. (0xE8)
+[1117/072331.347:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1117/072331.381:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[1117/072331.386:ERROR:exception_snapshot_win.cc(99)] thread ID 472404 not found in process

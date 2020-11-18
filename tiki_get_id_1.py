@@ -33,7 +33,7 @@ class Tiki():
             http.client.HTTPConnection._https_vsn = 10
             http.client.HTTPConnection._https_vsn_str = 'HTTPS/1.0'
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-            print('get data page : ...' + url + '?page=' + str(p) + '&order=newest')
+            print('get data page : ...' + url + '?sort=price%2Cdesc&page=' + str(p))
             data_ = requests.get(url + '?page=' + str(p), headers=headers)
 
             try:
@@ -59,7 +59,7 @@ class Tiki():
 
     def run(self):
 
-        for i in range(56, 101) :
+        for i in range(51, 101) :
             print(i)
             r = requests.get('http://banchongia.local.com/api/admin/v1/list-menu?page=' + str(i))
             r = r.json()

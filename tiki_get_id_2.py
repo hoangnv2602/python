@@ -33,10 +33,11 @@ class Tiki():
             http.client.HTTPConnection._https_vsn = 10
             http.client.HTTPConnection._https_vsn_str = 'HTTPS/1.0'
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
-            print('get data page : ...' + url + '?sort=price%2Cdesc&page=' + str(p))
-            data_ = requests.get(url + '?page=' + str(p), headers=headers)
+            print('get data page : ...' + url + '?sort=price%2Casc&page=' + str(p))
+            
 
             try:
+                data_ = requests.get(url + '?sort=price%2Casc&page=' + str(p), headers=headers)
                 data = htmldom.HtmlDom().createDom(data_.text)
                 lists = data.find('.product-item')
                 if lists.length() > 0 :
